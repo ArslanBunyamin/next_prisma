@@ -51,7 +51,7 @@ const ReviewPapers = (props: Props) => {
 
                   <div className="card-actions space-x-3 mt-5">
                     <button className="btn btn-success">Accept</button>
-                    <button className="btn btn-error">Decline</button>
+                    <button className="btn btn-error">Decline </button>
                     <div
                       onClick={() => {
                         download(paper.fileName);
