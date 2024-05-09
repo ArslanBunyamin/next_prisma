@@ -25,7 +25,7 @@ export default async function handler(
         })
         res.status(200).json(papers)
     } catch (error) {
-        console.log("error geldi hocam:", error)
+        res.status(531).json("error geldi hocam:" + error)
     }
 
 

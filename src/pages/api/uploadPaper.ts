@@ -13,7 +13,7 @@ export const config = {
 const readFile = (req: NextApiRequest): Promise<{ fields: formidable.Fields, files: formidable.Files }> => {
     const options: formidable.Options = {};
     options.uploadDir = path.join(process.cwd(), "/src/papers");
-    options.filename = (name, ext, part, form) => "" + part.originalFilename;
+    options.filename = (name, ext, part, form) => part.originalFilename as string;
 
     const form = formidable(options);
     return new Promise((resolve, reject) => {
@@ -34,6 +34,7 @@ export default async function handler(
         fs.readdirSync(path.join(process.cwd(), "/src/papers"))
     } catch (error) {
         fs.mkdirSync(path.join(process.cwd(), "/src/papers"))
+        res.status(531).json("abooo error" + error)
     }
 
     const formData = await readFile(req)
@@ -42,13 +43,13 @@ export default async function handler(
 
         const documentAlreadyExists = await prisma.papers.findUnique({
             where: {
-                fileName: "" + formData?.files?.fileData?.at(0)?.originalFilename
+                fileName: formData?.files?.fileData?.at(0)?.originalFilename as string
             }
         })
         if (!documentAlreadyExists) {
             const addPapers = await prisma.papers.create({
                 data: {
-                    fileName: "" + formData?.files?.fileData?.at(0)?.originalFilename
+                    fileName: formData?.files?.fileData?.at(0)?.originalFilename as string
                 }
             })
 
@@ -66,7 +67,7 @@ export default async function handler(
         }
 
     } catch (error) {
-        console.log("hocam error: ", error)
+        res.status(531).json("hocam error: " + error)
     }
 
 }

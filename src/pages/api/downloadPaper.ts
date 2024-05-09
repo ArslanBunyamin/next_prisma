@@ -19,7 +19,7 @@ export default async function handler(
 
         res.status(200).json(buffer)
     } catch (error) {
-        console.log("hocam error: ", error)
+        res.status(531).json("error geldi hocam:" + error)
     }
 
 }

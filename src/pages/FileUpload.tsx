@@ -7,13 +7,20 @@ type Props = {};
 
 const FileUpload = (props: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
   const [uploading, setuploading] = useState<boolean>(false);
 
   const buttonHandler = async (e: MouseEvent) => {
-    if (inputRef.current?.files?.length == 0) return alert("Önce dosya seçin!");
-    setuploading(() => true);
     const fileInput = inputRef.current;
+    if (fileInput?.files?.length == 0) return alert("Önce dosya seçin!");
+
+    if (!fileInput?.files?.item(0)?.name.endsWith(".pdf")) {
+      if (fileInput) {
+        fileInput.value = "";
+        fileInput.files = null;
+      }
+      return alert("Sadece pdf dosyası yükleyebilirsiniz!");
+    }
+    setuploading(() => true);
     const file = fileInput?.files?.item(0);
     const formData: any = new FormData();
     formData.append("fileData", file);
@@ -22,15 +29,7 @@ const FileUpload = (props: Props) => {
       headers: {
         "Content-Type": file?.type,
       },
-      onUploadProgress: function (progressEvent) {
-        const percentCompleted = progressEvent.total
-          ? Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          : 0;
-        if (progressRef.current)
-          progressRef.current.innerText = "" + percentCompleted;
-      },
     });
-    if (progressRef.current) progressRef.current.innerText = "";
     alert(res.data);
 
     //clear the file input
