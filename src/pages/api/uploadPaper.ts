@@ -37,37 +37,36 @@ export default async function handler(
     }
 
     const formData = await readFile(req)
-
-
     const prisma = new PrismaClient()
+    try {
 
-    const documentAlreadyExists = await prisma.papers.findUnique({
-        where: {
-            fileName: "" + formData?.files?.fileData?.at(0)?.originalFilename
-        }
-    })
-    if (!documentAlreadyExists) {
-        const addPapers = await prisma.papers.create({
-            data: {
+        const documentAlreadyExists = await prisma.papers.findUnique({
+            where: {
                 fileName: "" + formData?.files?.fileData?.at(0)?.originalFilename
             }
         })
+        if (!documentAlreadyExists) {
+            const addPapers = await prisma.papers.create({
+                data: {
+                    fileName: "" + formData?.files?.fileData?.at(0)?.originalFilename
+                }
+            })
 
-        const addReview = await prisma.review.create({
-            data: {
-                papersId: addPapers.id,
-                reviewerId: "clvteym9e000012kpznc0m07l",
-                authorId: "clvtfq42m000112kpllahlf98"
-            }
-        })
+            const addReview = await prisma.review.create({
+                data: {
+                    papersId: addPapers.id,
+                    reviewerId: "clvteym9e000012kpznc0m07l",
+                    authorId: "clvtfq42m000112kpllahlf98"
+                }
+            })
 
-        res.status(200).json("Dosya yükleme başarılı!")
-    } else {
-        res.status(201).json("Dosya zaten yüklü!")
+            res.status(200).json("Dosya yükleme başarılı!")
+        } else {
+            res.status(201).json("Dosya zaten yüklü!")
+        }
+
+    } catch (error) {
+        console.log("hocam error: ", error)
     }
-
-
-
-
 
 }

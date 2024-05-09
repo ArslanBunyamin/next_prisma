@@ -33,7 +33,7 @@ const ReviewPapers = (props: Props) => {
     saveAs(blob, fileName);
   };
   return (
-    <div className="min-h-screen flex items-center justify-center font-mono">
+    <div className="min-h-screen flex items-center justify-center font-mono bg-slate-900">
       {papers ? (
         <div className="grid grid-cols-1 gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
           {papers.map((paper, index) => {

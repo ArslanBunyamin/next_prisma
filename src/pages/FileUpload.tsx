@@ -1,21 +1,24 @@
 "use client";
 
 import axios from "axios";
-import { MouseEvent, useRef } from "react";
+import { MouseEvent, useRef, useState } from "react";
 
 type Props = {};
 
 const FileUpload = (props: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const [uploading, setuploading] = useState<boolean>(false);
 
   const buttonHandler = async (e: MouseEvent) => {
+    if (inputRef.current?.files?.length == 0) return alert("Önce dosya seçin!");
+    setuploading(() => true);
     const fileInput = inputRef.current;
     const file = fileInput?.files?.item(0);
     const formData: any = new FormData();
     formData.append("fileData", file);
 
-    const res = await axios.put("/api/handler", formData, {
+    const res = await axios.put("/api/uploadPaper", formData, {
       headers: {
         "Content-Type": file?.type,
       },
@@ -35,10 +38,11 @@ const FileUpload = (props: Props) => {
       fileInput.value = "";
       fileInput.files = null;
     }
+    setuploading(() => false);
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center justify-center font-mono">
+    <div className="h-screen w-screen flex flex-col items-center justify-center font-mono bg-gradient-to-br from-slate-700 to-slate-950">
       <div className="form-control border-dashed">
         <label htmlFor="myFile" className="label">
           Upload the papers please.
@@ -49,16 +53,17 @@ const FileUpload = (props: Props) => {
           className="file-input"
           accept=".pdf"
         ></input>
-        <button className="btn btn-primary mt-3" onClick={buttonHandler}>
-          Upload
+        <button
+          className="btn btn-primary mt-3"
+          onClick={buttonHandler}
+          disabled={uploading}
+        >
+          {uploading ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            "Upload"
+          )}
         </button>
-      </div>
-      <div
-        id="progress"
-        ref={progressRef}
-        className="text-lg p-2 mt-5 text-red-700"
-      >
-        {" "}
       </div>
     </div>
   );

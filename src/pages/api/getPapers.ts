@@ -6,11 +6,11 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    const reviewerId = req.query.reviewerId as string
+
+    const prisma = new PrismaClient();
 
     try {
-        const reviewerId = req.query.reviewerId as string
-
-        const prisma = new PrismaClient();
 
         const papers = await prisma.papers.findMany({
             where: {
@@ -25,7 +25,7 @@ export default async function handler(
         })
         res.status(200).json(papers)
     } catch (error) {
-        console.log("server aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", error)
+        console.log("error geldi hocam:", error)
     }
 
 

@@ -13,9 +13,13 @@ export default async function handler(
     res: NextApiResponse
 ) {
 
-    const fileName = req.query.fileName as string
-    const buffer = await readFile(path.join(process.cwd(), `/src/papers/${fileName}`));
+    try {
+        const fileName = req.query.fileName as string
+        const buffer = await readFile(path.join(process.cwd(), `/src/papers/${fileName}`));
 
-    res.status(200).json(buffer)
+        res.status(200).json(buffer)
+    } catch (error) {
+        console.log("hocam error: ", error)
+    }
 
 }
