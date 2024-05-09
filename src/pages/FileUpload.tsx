@@ -25,7 +25,7 @@ const FileUpload = (props: Props) => {
     const formData: any = new FormData();
     formData.append("fileData", file);
 
-    const res = await axios.put("/api/uploadPaper", formData, {
+    const res = await axios.post("/api/uploadPaper", formData, {
       headers: {
         "Content-Type": file?.type,
       },
