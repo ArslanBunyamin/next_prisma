@@ -15,11 +15,15 @@ const ReviewPapers = (props: Props) => {
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get("/api/getPapers", {
-        params: { reviewerId: reviewerId },
-      });
+      try {
+        const res = await axios.get("/api/getPapers", {
+          params: { reviewerId: reviewerId },
+        });
 
-      setpapers(res.data);
+        setpapers(res.data);
+      } catch (error) {
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaa", error);
+      }
     })();
   }, []);
 
