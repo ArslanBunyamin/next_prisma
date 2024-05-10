@@ -24,8 +24,9 @@ model Author {
 
 model Papers {
   id         String   @id @default(cuid())
-  fileName   String   @unique
+  fileName   String
   uploadDate DateTime @default(now())
+  url        String   @unique
   review     Review?
 }
 

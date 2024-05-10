@@ -11,7 +11,7 @@ const FileUpload = (props: Props) => {
 
   const buttonHandler = async (e: MouseEvent) => {
     const fileInput = inputRef.current;
-    if (fileInput?.files?.length == 0) return alert("Önce dosya seçin!");
+    if (!fileInput?.files) return alert("Önce dosya seçin!");
 
     if (!fileInput?.files?.item(0)?.name.endsWith(".pdf")) {
       if (fileInput) {
@@ -22,10 +22,9 @@ const FileUpload = (props: Props) => {
     }
     setuploading(() => true);
     const file = fileInput?.files?.item(0);
-    const formData: any = new FormData();
-    formData.append("fileData", file);
 
-    const res = await axios.post("/api/uploadPaper", formData, {
+    const res = await axios.post("/api/uploadPaper", file, {
+      params: { fileName: file?.name },
       headers: {
         "Content-Type": file?.type,
       },

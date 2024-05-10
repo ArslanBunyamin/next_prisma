@@ -1,28 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import formidable from 'formidable';
-import fs from 'fs';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import path from 'path';
+import { put } from '@vercel/blob';
+import type { NextApiRequest, NextApiResponse, PageConfig } from 'next';
 
-export const config = {
+export const config: PageConfig = {
     api: {
         bodyParser: false
     }
-}
-
-const readFile = (req: NextApiRequest): Promise<{ fields: formidable.Fields, files: formidable.Files }> => {
-    const options: formidable.Options = {};
-    options.uploadDir = path.join(process.cwd(), "/src/papers");
-    options.filename = (name, ext, part, form) => part.originalFilename as string;
-
-    const form = formidable(options);
-    return new Promise((resolve, reject) => {
-        form.parse(req, (err, fields, files) => {
-            if (err) reject(err);
-            resolve({ fields, files })
-        })
-    })
-
 }
 
 export default async function handler(
@@ -30,34 +13,32 @@ export default async function handler(
     res: NextApiResponse
 ) {
 
-    try {
-        fs.readdirSync(path.join(process.cwd(), "/src/papers"))
-    } catch (error) {
-        fs.mkdirSync(path.join(process.cwd(), "/src/papers"))
-        res.status(531).json("abooo error" + error)
-    }
 
-    const formData = await readFile(req)
+
     const prisma = new PrismaClient()
     try {
+        const blob = await put(req.query.fileName as string, req, {
+            access: "public",
+        })
 
         const documentAlreadyExists = await prisma.papers.findUnique({
             where: {
-                fileName: formData?.files?.fileData?.at(0)?.originalFilename as string
+                url: blob.url
             }
         })
         if (!documentAlreadyExists) {
-            const addPapers = await prisma.papers.create({
+            const addPaper = await prisma.papers.create({
                 data: {
-                    fileName: formData?.files?.fileData?.at(0)?.originalFilename as string
+                    fileName: blob.pathname,
+                    url: blob.url,
                 }
             })
 
             const addReview = await prisma.review.create({
                 data: {
-                    papersId: addPapers.id,
-                    reviewerId: "clvteym9e000012kpznc0m07l",
-                    authorId: "clvtfq42m000112kpllahlf98"
+                    papersId: addPaper.id,
+                    reviewerId: "clw10mqye0001135mkkdvtccx",
+                    authorId: "clw10luub0000135mq6nlhnpc"
                 }
             })
 

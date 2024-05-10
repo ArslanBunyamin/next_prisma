@@ -1,17 +1,15 @@
 "use client";
-
 import axios from "axios";
-import { MouseEvent, useEffect, useState } from "react";
-import { FaFileArrowDown } from "react-icons/fa6";
-import { saveAs } from "file-saver";
+import { useEffect, useState } from "react";
+import { FaEye, FaFileArrowDown } from "react-icons/fa6";
 
 type Props = {};
 
 const ReviewPapers = (props: Props) => {
   const [papers, setpapers] =
-    useState<[{ fileName: string; uploadDate: string }]>();
+    useState<[{ fileName: string; uploadDate: string; url: string }]>();
 
-  const reviewerId = "clvteym9e000012kpznc0m07l";
+  const reviewerId = "clw10mqye0001135mkkdvtccx";
 
   useEffect(() => {
     (async () => {
@@ -23,15 +21,6 @@ const ReviewPapers = (props: Props) => {
     })();
   }, []);
 
-  const download = async (fileName: string) => {
-    const file = await axios.get("/api/downloadPaper", {
-      params: { fileName: fileName },
-    });
-    const buffer = file.data.data;
-    const blob = new Blob([new Uint8Array(buffer)]);
-    console.log(blob);
-    saveAs(blob, fileName);
-  };
   return (
     <div className="min-h-screen flex items-center justify-center font-mono bg-slate-900">
       {papers ? (
@@ -52,14 +41,14 @@ const ReviewPapers = (props: Props) => {
                   <div className="card-actions space-x-3 mt-5">
                     <button className="btn btn-success">Accept</button>
                     <button className="btn btn-error">Decline </button>
-                    <div
-                      onClick={() => {
-                        download(paper.fileName);
-                      }}
-                    >
-                      <FaFileArrowDown className="size-12 text-slate-500 cursor-pointer" />
-                    </div>
+                    <a href={paper.url} target="_blank">
+                      <FaEye className="size-10 text-slate-500 cursor-pointer" />
+                    </a>
+                    <a href={paper.url + "?download=1"} target="_blank">
+                      <FaFileArrowDown className="size-10 text-slate-500 cursor-pointer" />
+                    </a>
                   </div>
+
                   <form className="card-actions space-x-3 mt-8">
                     <input type="text" className="input input-bordered" />
                     <input

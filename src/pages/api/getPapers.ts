@@ -20,14 +20,12 @@ export default async function handler(
             },
             select: {
                 fileName: true,
-                uploadDate: true
+                uploadDate: true,
+                url: true
             }
         })
         res.status(200).json(papers)
     } catch (error) {
         res.status(531).json("error geldi hocam:" + error)
     }
-
-
-
 }
