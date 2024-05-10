@@ -33,7 +33,9 @@ const ReviewPapers = (props: Props) => {
                 className="card bg-slate-800 hover:bg-opacity-70 cursor-default space-x-14"
               >
                 <div className="card-body">
-                  <div className="card-title">{paper.fileName}</div>
+                  <div className="card-title line-clamp-1">
+                    {paper.fileName}
+                  </div>
                   <div className="stat-desc text-base">
                     {date.toString().split(" ").slice(0, 5).join(" ")}
                   </div>
@@ -42,15 +44,16 @@ const ReviewPapers = (props: Props) => {
                     <button className="btn btn-success">Accept</button>
                     <button className="btn btn-error">Decline </button>
                     <a href={paper.url} target="_blank">
-                      <FaEye className="size-10 text-slate-500 cursor-pointer" />
-                    </a>
-                    <a href={paper.url + "?download=1"} target="_blank">
-                      <FaFileArrowDown className="size-10 text-slate-500 cursor-pointer" />
+                      <FaEye className="size-12 text-slate-500 cursor-pointer hover:text-slate-400" />
                     </a>
                   </div>
 
-                  <form className="card-actions space-x-3 mt-8">
-                    <input type="text" className="input input-bordered" />
+                  <form className="card-actions gap-3 mt-8">
+                    <input
+                      type="text"
+                      className="input input-bordered flex-grow placeholder-gray-500 placeholder-opacity-50"
+                      placeholder="Write your revision"
+                    />
                     <input
                       type="reset"
                       className="btn btn-warning"
